@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * OpenPro — Claude Code with any LLM
+ * OpenPro - Claude Code with any LLM
  *
  * If dist/cli.mjs exists (built), run that.
  * Otherwise, tell the user to build first or use `bun run dev`.
@@ -13,6 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const distPath = join(__dirname, '..', 'dist', 'cli.mjs')
+
 if (existsSync(distPath)) {
   await import(pathToFileURL(distPath).href)
 } else {

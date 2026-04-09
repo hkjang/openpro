@@ -14,7 +14,7 @@ npm pack
 This creates a file like:
 
 ```text
-hkjang-openpro-0.1.10.tgz
+hkjang-openpro-x.y.z.tgz
 ```
 
 Upload that `.tgz` file to the matching GitHub Release.
@@ -26,14 +26,14 @@ After downloading the release asset to your machine:
 Windows PowerShell:
 
 ```powershell
-npm install -g .\hkjang-openpro-0.1.10.tgz
+npm install -g .\hkjang-openpro-x.y.z.tgz
 openpro --version
 ```
 
 macOS / Linux:
 
 ```bash
-npm install -g ./hkjang-openpro-0.1.10.tgz
+npm install -g ./hkjang-openpro-x.y.z.tgz
 openpro --version
 ```
 
@@ -44,13 +44,13 @@ Download the newer `.tgz` file and run the same command again:
 Windows PowerShell:
 
 ```powershell
-npm install -g .\hkjang-openpro-0.1.10.tgz
+npm install -g .\hkjang-openpro-x.y.z.tgz
 ```
 
 macOS / Linux:
 
 ```bash
-npm install -g ./hkjang-openpro-0.1.10.tgz
+npm install -g ./hkjang-openpro-x.y.z.tgz
 ```
 
 `npm install -g` will replace the previous global OpenPro installation with the downloaded release build.

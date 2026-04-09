@@ -23,18 +23,18 @@ npm install -g @hkjang/openpro
 
 ### Install from a GitHub release `.tgz`
 
-If you downloaded a release asset such as `hkjang-openpro-0.1.10.tgz`, install it globally with:
+If you downloaded a release asset such as `hkjang-openpro-x.y.z.tgz`, install it globally with:
 
 macOS / Linux:
 
 ```bash
-npm install -g ./hkjang-openpro-0.1.10.tgz
+npm install -g ./hkjang-openpro-x.y.z.tgz
 ```
 
 Windows PowerShell:
 
 ```powershell
-npm install -g .\hkjang-openpro-0.1.10.tgz
+npm install -g .\hkjang-openpro-x.y.z.tgz
 ```
 
 After installation, confirm the installed build:

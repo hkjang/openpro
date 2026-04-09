@@ -21,10 +21,10 @@ npm --version
 npm install -g @hkjang/openpro
 ```
 
-If you want to install directly from a GitHub release asset instead of npm, download the `.tgz` file and run:
+If you want to install directly from a GitHub release asset instead of npm, download the `.tgz` file and replace `x.y.z` with the release version:
 
 ```powershell
-npm install -g .\hkjang-openpro-0.1.10.tgz
+npm install -g .\hkjang-openpro-x.y.z.tgz
 openpro --version
 ```
 
