@@ -1,0 +1,102 @@
+{
+  "name": "openpro-vscode",
+  "displayName": "OpenPro",
+  "description": "Sleek VS Code extension for OpenPro with a visual Control Center and terminal-aligned theme.",
+  "version": "0.1.1",
+  "publisher": "devnull-bootloader",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Themes",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:openpro.start",
+    "onCommand:openpro.openDocs",
+    "onCommand:openpro.openControlCenter",
+    "onView:openpro.controlCenter"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "openpro.start",
+        "title": "OpenPro: Launch in Terminal",
+        "category": "OpenPro"
+      },
+      {
+        "command": "openpro.openDocs",
+        "title": "OpenPro: Open Repository",
+        "category": "OpenPro"
+      },
+      {
+        "command": "openpro.openControlCenter",
+        "title": "OpenPro: Open Control Center",
+        "category": "OpenPro"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "openpro",
+          "title": "OpenPro",
+          "icon": "media/openpro.svg"
+        }
+      ]
+    },
+    "views": {
+      "openpro": [
+        {
+          "id": "openpro.controlCenter",
+          "name": "Control Center",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "OpenPro",
+      "properties": {
+        "openpro.launchCommand": {
+          "type": "string",
+          "default": "openpro",
+          "description": "Command run in the integrated terminal when launching OpenPro."
+        },
+        "openpro.terminalName": {
+          "type": "string",
+          "default": "OpenPro",
+          "description": "Integrated terminal tab name for OpenPro sessions."
+        },
+        "openpro.useOpenAIShim": {
+          "type": "boolean",
+          "default": false,
+          "description": "Optionally set CLAUDE_CODE_USE_OPENAI=1 in launched OpenPro terminals."
+        }
+      }
+    },
+    "themes": [
+      {
+        "label": "OpenPro Terminal Black",
+        "uiTheme": "vs-dark",
+        "path": "./themes/OpenPro-Terminal-Black.json"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "node --check ./src/extension.js",
+    "package": "npx @vscode/vsce package --no-dependencies"
+  },
+  "keywords": [
+    "openpro",
+    "terminal",
+    "theme",
+    "cli",
+    "llm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hkjang/openpro"
+  },
+  "license": "MIT"
+}
