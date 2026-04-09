@@ -23,6 +23,8 @@ npm install -g @hkjang/openpro
 
 ### Install from a GitHub release `.tgz`
 
+Release assets are built with `bun run pack:release`, which bundles the runtime npm dependencies into the tarball so `npm install -g` can install from the local file without reaching the npm registry during install.
+
 If you downloaded a release asset such as `hkjang-openpro-x.y.z.tgz`, install it globally with:
 
 macOS / Linux:

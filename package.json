@@ -1,6 +1,6 @@
 {
   "name": "@hkjang/openpro",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Claude Code opened to any LLM — OpenAI, Gemini, DeepSeek, Ollama, and 200+ models",
   "type": "module",
   "bin": {
@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "bun run scripts/build.ts",
+    "pack:release": "bun run scripts/pack-release.ts",
     "dev": "bun run build && node dist/cli.mjs",
     "dev:profile": "bun run scripts/provider-launch.ts",
     "dev:profile:fast": "bun run scripts/provider-launch.ts auto --fast --bare",

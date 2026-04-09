@@ -7,8 +7,7 @@ This guide explains how to publish and install OpenPro from a GitHub Release tar
 From the repository root:
 
 ```powershell
-bun run build
-npm pack
+bun run pack:release
 ```
 
 This creates a file like:
@@ -16,6 +15,8 @@ This creates a file like:
 ```text
 hkjang-openpro-x.y.z.tgz
 ```
+
+This release tarball bundles the runtime npm dependencies, so `npm install -g` can install from the local file without downloading packages from the npm registry at install time.
 
 Upload that `.tgz` file to the matching GitHub Release.
 
@@ -58,7 +59,6 @@ npm install -g ./hkjang-openpro-x.y.z.tgz
 ## 4. Recommended release checklist
 
 - Run `bun test src/components/messages/UserPromptMessage.test.ts`
-- Run `bun run build`
-- Run `npm pack`
+- Run `bun run pack:release`
 - Verify `node .\dist\cli.mjs --version` or `node ./dist/cli.mjs --version`
 - Verify `openpro --version` after global install

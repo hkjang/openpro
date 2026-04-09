@@ -22,6 +22,7 @@
 5. 버전은 이중 구조다.
    내부 호환성용 `MACRO.VERSION`은 `99.0.0`, 사용자 표시용 `MACRO.DISPLAY_VERSION`은 실제 package version이다.
 6. UI와 npm 패키징은 OpenPro로 브랜딩되었지만, native installer, doctor, update, 로컬 설치 wrapper에는 아직 `claude` naming이 많이 남아 있다.
+7. GitHub Release용 의존성 포함 `tgz`는 `bun run pack:release`로 만들고, raw `npm pack`은 런타임 의존성을 번들하지 않는다.
 
 ---
 
@@ -60,6 +61,7 @@ flowchart TD
 
 - `prepack`이 `npm run build`를 호출하므로 패키징 직전에 빌드가 강제된다.
 - `files`에 소스 전체가 아닌 빌드 산출물만 주로 실리므로, 패키지 품질은 빌드 결과 검증이 핵심이다.
+- `npm install -g ./openpro.tgz` 형태의 릴리즈 자산은 `bun run pack:release`로 만들어야 런타임 의존성이 함께 포함된다.
 
 ---
 
