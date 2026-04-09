@@ -21,6 +21,13 @@ npm --version
 npm install -g @hkjang/openpro
 ```
 
+If you want to install directly from a GitHub release asset instead of npm, download the `.tgz` file and run:
+
+```bash
+npm install -g ./hkjang-openpro-0.1.10.tgz
+openpro --version
+```
+
 ## 3. Pick One Provider
 
 ### Option A: OpenAI

@@ -21,6 +21,28 @@ Use OpenAI-compatible APIs, Gemini, GitHub Models, Codex, Ollama, Atomic Chat, a
 npm install -g @hkjang/openpro
 ```
 
+### Install from a GitHub release `.tgz`
+
+If you downloaded a release asset such as `hkjang-openpro-0.1.10.tgz`, install it globally with:
+
+macOS / Linux:
+
+```bash
+npm install -g ./hkjang-openpro-0.1.10.tgz
+```
+
+Windows PowerShell:
+
+```powershell
+npm install -g .\hkjang-openpro-0.1.10.tgz
+```
+
+After installation, confirm the installed build:
+
+```bash
+openpro --version
+```
+
 If the npm install path later reports `ripgrep not found`, install ripgrep system-wide and confirm `rg --version` works in the same terminal before starting OpenPro.
 
 ### Start
@@ -104,6 +126,7 @@ Korean documentation set:
 - [Korean Server Mode Guide](docs/openpro-server-mode-guide-ko.md)
 - [Korean Feature Flag and Build Guide](docs/openpro-feature-flag-build-guide-ko.md)
 - [Korean Release, Packaging, and Fork Maintenance Guide](docs/openpro-release-packaging-fork-guide-ko.md)
+- [Korean Release TGZ Install Guide](docs/release-tgz-install-guide-ko.md)
 - [Korean Remote Control and Bridge Guide](docs/openpro-remote-control-bridge-guide-ko.md)
 - [Korean Auth and Credential Guide](docs/openpro-auth-credential-guide-ko.md)
 - [Korean Environment and Settings Reference](docs/openpro-env-settings-reference-ko.md)
