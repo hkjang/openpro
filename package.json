@@ -1,6 +1,6 @@
 {
   "name": "@hkjang/openpro",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "description": "Claude Code opened to any LLM — OpenAI, Gemini, DeepSeek, Ollama, and 200+ models",
   "type": "module",
   "bin": {

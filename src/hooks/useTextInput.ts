@@ -22,6 +22,7 @@ import { env } from '../utils/env.js'
 import { isFullscreenEnvEnabled } from '../utils/fullscreen.js'
 import type { ImageDimensions } from '../utils/imageResizer.js'
 import { isModifierPressed, prewarmModifiers } from '../utils/modifiers.js'
+import { extractCoalescedSubmitText } from './textInputSubmit.js'
 import { useDoublePress } from './useDoublePress.js'
 
 type MaybeCursor = void | Cursor
@@ -439,6 +440,9 @@ export function useTextInput({
       return
     }
 
+    const coalescedSubmitText = extractCoalescedSubmitText(filteredInput, key)
+    const mappedInput = coalescedSubmitText ?? filteredInput
+
     // Fix Issue #1853: Filter DEL characters that interfere with backspace in SSH/tmux
     // In SSH/tmux environments, backspace generates both key events and raw DEL chars
     if (!key.backspace && !key.delete && input.includes('\x7f')) {
@@ -474,7 +478,7 @@ export function useTextInput({
       resetYankState()
     }
 
-    const nextCursor = mapKey(key)(filteredInput)
+    const nextCursor = mapKey(key)(mappedInput)
     if (nextCursor) {
       if (!cursor.equals(nextCursor)) {
         if (cursor.text !== nextCursor.text) {
@@ -482,19 +486,10 @@ export function useTextInput({
         }
         setOffset(nextCursor.offset)
       }
-      // SSH-coalesced Enter: on slow links, "o" + Enter can arrive as one
-      // chunk "o\r". parseKeypress only matches s === '\r', so it hit the
-      // default handler above (which stripped the trailing \r). Text with
-      // exactly one trailing \r is coalesced Enter; lone \r is Alt+Enter
-      // (newline); embedded \r is multi-line paste.
-      if (
-        filteredInput.length > 1 &&
-        filteredInput.endsWith('\r') &&
-        !filteredInput.slice(0, -1).includes('\r') &&
-        // Backslash+CR is a stale VS Code Shift+Enter binding, not
-        // coalesced Enter. See default handler above.
-        filteredInput[filteredInput.length - 2] !== '\\'
-      ) {
+      // Some pseudo-TTYs coalesce text and Enter into a single chunk like
+      // "hello\r", "hello\n", or "hello\r\n". After inserting the text
+      // portion above, submit the combined value explicitly.
+      if (coalescedSubmitText !== null) {
         onSubmit?.(nextCursor.text)
       }
     }

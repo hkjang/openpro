@@ -1,6 +1,7 @@
 import { coerce } from 'semver'
 import type { Writable } from 'stream'
 import { env } from '../utils/env.js'
+import { isMinttyLikeTerminal, shouldTreatStdoutAsInteractive } from '../utils/pseudoTty.js'
 import { gte } from '../utils/semver.js'
 import { getClearTerminalSequence } from './clearTerminal.js'
 import type { Diff } from './frame.js'
@@ -24,7 +25,7 @@ export type Progress = {
  */
 export function isProgressReportingAvailable(): boolean {
   // Only available if we have a TTY (not piped)
-  if (!process.stdout.isTTY) {
+  if (!shouldTreatStdoutAsInteractive(process.stdout)) {
     return false
   }
 
@@ -181,6 +182,9 @@ export function supportsExtendedKeys(): boolean {
  *  mid-stream. WT_SESSION catches WSL-in-Windows-Terminal where platform
  *  is linux but output still routes through conhost. */
 export function hasCursorUpViewportYankBug(): boolean {
+  if (isMinttyLikeTerminal()) {
+    return false
+  }
   return process.platform === 'win32' || !!process.env.WT_SESSION
 }
 

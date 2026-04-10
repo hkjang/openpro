@@ -1,3 +1,5 @@
+import { shouldTreatStdoutAsInteractive } from '../utils/pseudoTty.js'
+
 /**
  * OpenPro startup screen — filled-block text logo with sunset gradient.
  * Called once at CLI startup before the Ink UI renders.
@@ -154,7 +156,7 @@ function boxRow(content: string, width: number, rawLen: number): string {
 
 export function printStartupScreen(): void {
   // Skip in non-interactive / CI / print mode
-  if (process.env.CI || !process.stdout.isTTY) return
+  if (process.env.CI || !shouldTreatStdoutAsInteractive(process.stdout)) return
 
   const p = detectProvider()
   const W = 62

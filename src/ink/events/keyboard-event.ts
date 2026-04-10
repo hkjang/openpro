@@ -31,7 +31,7 @@ export class KeyboardEvent extends TerminalEvent {
 
 function keyFromParsed(parsed: ParsedKey): string {
   const seq = parsed.sequence ?? ''
-  const name = parsed.name ?? ''
+  const name = normalizeKeyboardEventKey(parsed.name ?? '')
 
   // Ctrl combos: sequence is a control byte (\x03 for ctrl+c), name is the
   // letter. Browsers report e.key === 'c' with e.ctrlKey === true.
@@ -48,4 +48,11 @@ function keyFromParsed(parsed: ParsedKey): string {
   // either an escape sequence (\x1b[B) or a control byte (\r, \t), so use
   // the parsed name. Browsers report e.key === 'ArrowDown'.
   return name || seq
+}
+
+function normalizeKeyboardEventKey(name: string): string {
+  // Ink's higher-level keydown handlers historically compare against
+  // "return". Git Bash/mintty can surface Enter as "\n" -> name "enter",
+  // so normalize here to keep DOM-style handlers consistent.
+  return name === 'enter' ? 'return' : name
 }
