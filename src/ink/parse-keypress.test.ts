@@ -47,3 +47,10 @@ test('preserves printable Unicode CSI-u input with explicit modifier 0', () => {
   expect(event.key.shift).toBe(false)
   expect(event.key.super).toBe(false)
 })
+
+test('treats LF enter as return for input handlers', () => {
+  const event = parseInputEvent('\n')
+
+  expect(event.input).toBe('')
+  expect(event.key.return).toBe(true)
+})

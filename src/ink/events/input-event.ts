@@ -36,7 +36,10 @@ function parseKey(keypress: ParsedKey): [Key, string] {
     wheelDown: keypress.name === 'wheeldown',
     home: keypress.name === 'home',
     end: keypress.name === 'end',
-    return: keypress.name === 'return',
+    // Some Windows pseudo-TTY paths surface Enter as LF (`enter`) instead of
+    // CR (`return`). Treat both as submit/confirm so Git Bash mintty remains
+    // interactive after stdin is re-opened through CONIN$.
+    return: keypress.name === 'return' || keypress.name === 'enter',
     escape: keypress.name === 'escape',
     fn: keypress.fn,
     ctrl: keypress.ctrl,
@@ -170,7 +173,7 @@ function parseKey(keypress: ParsedKey): [Key, string] {
   if (
     !processedAsSpecialSequence &&
     keypress.name &&
-    nonAlphanumericKeys.includes(keypress.name)
+    (nonAlphanumericKeys.includes(keypress.name) || keypress.name === 'enter')
   ) {
     input = ''
   }

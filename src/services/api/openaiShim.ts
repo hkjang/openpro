@@ -42,6 +42,10 @@ import {
   resolveProviderRequest,
   getGithubEndpointType,
 } from './providerConfig.js'
+import {
+  hasToolFieldMapping,
+  normalizeToolArguments,
+} from './toolArgumentNormalization.js'
 import { sanitizeSchemaForOpenAICompat } from '../../utils/schemaSanitizer.js'
 import { redactSecretValueForDisplay } from '../../utils/providerProfile.js'
 
