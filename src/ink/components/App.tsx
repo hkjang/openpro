@@ -4,6 +4,7 @@ import { stopCapturingEarlyInput } from '../../utils/earlyInput.js';
 import { isEnvTruthy } from '../../utils/envUtils.js';
 import { isMouseClicksDisabled } from '../../utils/fullscreen.js';
 import { logError } from '../../utils/log.js';
+import { isMinttyLikeTerminal } from '../../utils/pseudoTty.js';
 import { EventEmitter } from '../events/emitter.js';
 import { InputEvent } from '../events/input-event.js';
 import { TerminalFocusEvent } from '../events/terminal-focus-event.js';
@@ -207,6 +208,27 @@ export default class App extends PureComponent<Props, State> {
     logError(error);
     this.handleExit(error);
   }
+  private shouldIgnoreRawModeError(error: unknown): boolean {
+    const err = error as NodeJS.ErrnoException;
+    return isMinttyLikeTerminal() && (err?.code === 'EPERM' || err?.code === 'ENOTTY' || err?.code === 'EINVAL');
+  }
+  private trySetRawMode(isEnabled: boolean): boolean {
+    const stdinWithRaw = this.props.stdin as NodeJS.ReadStream & {
+      setRawMode?: (mode: boolean) => void;
+    };
+    if (!stdinWithRaw.setRawMode) {
+      return false;
+    }
+    try {
+      stdinWithRaw.setRawMode(isEnabled);
+      return true;
+    } catch (error) {
+      if (this.shouldIgnoreRawModeError(error)) {
+        return false;
+      }
+      throw error;
+    }
+  }
   handleSetRawMode = (isEnabled: boolean): void => {
     const {
       stdin
@@ -228,7 +250,7 @@ export default class App extends PureComponent<Props, State> {
         // The buffered text is preserved for REPL.tsx via consumeEarlyInput().
         stopCapturingEarlyInput();
         stdin.ref();
-        stdin.setRawMode(true);
+        this.trySetRawMode(true);
         stdin.resume();
         if (this.stdinMode === 'data') {
           stdin.addListener('data', this.handleDataChunk);
@@ -279,7 +301,7 @@ export default class App extends PureComponent<Props, State> {
       this.props.stdout.write(DFE);
       // Disable bracketed paste mode
       this.props.stdout.write(DBP);
-      stdin.setRawMode(false);
+      this.trySetRawMode(false);
       stdin.removeListener('readable', this.handleReadable);
       stdin.removeListener('data', this.handleDataChunk);
       stdin.pause();

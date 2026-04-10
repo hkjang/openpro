@@ -3,6 +3,10 @@ import { ReadStream } from 'tty'
 import type { RenderOptions } from '../ink.js'
 import { isEnvTruthy } from './envUtils.js'
 import { logError } from './log.js'
+import {
+  getPseudoTtyStdoutOverride,
+  isMinttyLikeTerminal,
+} from './pseudoTty.js'
 
 // Cached stdin override - computed once per process
 let cachedStdinOverride: ReadStream | undefined | null = null
@@ -18,8 +22,11 @@ function getStdinOverride(): ReadStream | undefined {
     return cachedStdinOverride
   }
 
-  // No override needed if stdin is already a TTY
-  if (process.stdin.isTTY) {
+  const forceWindowsConsoleInput =
+    process.platform === 'win32' && isMinttyLikeTerminal()
+
+  // No override needed if stdin is already a TTY and supports raw mode
+  if (process.stdin.isTTY && !forceWindowsConsoleInput) {
     cachedStdinOverride = undefined
     return undefined
   }
@@ -36,10 +43,9 @@ function getStdinOverride(): ReadStream | undefined {
     return undefined
   }
 
-  // Git Bash/mintty on Windows often launches Win32 programs with stdout
-  // attached to a terminal but stdin not marked as a TTY. Ink then fails
-  // when it enables raw mode and the REPL exits right after the splash
-  // screen. Re-open the console input device explicitly in that case.
+  // Git Bash/mintty on Windows can expose stdin in a way that reports as a
+  // TTY but still rejects setRawMode(EPERM). Re-open the real console input
+  // device explicitly in that case so Ink can manage raw mode safely.
   const ttyPath = process.platform === 'win32' ? '\\\\.\\CONIN$' : '/dev/tty'
 
   // Try to open a real terminal input source as an alternative.
@@ -69,9 +75,13 @@ export function getBaseRenderOptions(
   exitOnCtrlC: boolean = false,
 ): RenderOptions {
   const stdin = getStdinOverride()
+  const stdout = getPseudoTtyStdoutOverride()
   const options: RenderOptions = { exitOnCtrlC }
   if (stdin) {
     options.stdin = stdin
+  }
+  if (stdout) {
+    options.stdout = stdout
   }
   return options
 }

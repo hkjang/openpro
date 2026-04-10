@@ -56,6 +56,7 @@ import { getInitialFastModeSetting, isFastModeEnabled, prefetchFastModeStatus, r
 import { applyConfigEnvironmentVariables } from './utils/managedEnv.js';
 import { createSystemMessage, createUserMessage } from './utils/messages.js';
 import { getPlatform } from './utils/platform.js';
+import { shouldTreatStdoutAsInteractive } from './utils/pseudoTty.js';
 import { getBaseRenderOptions } from './utils/renderOptions.js';
 import { getSessionIngressAuthToken } from './utils/sessionIngressAuth.js';
 import { settingsChangeDetector } from './utils/settings/changeDetector.js';
@@ -801,7 +802,7 @@ export async function main() {
   const hasPrintFlag = cliArgs.includes('-p') || cliArgs.includes('--print');
   const hasInitOnlyFlag = cliArgs.includes('--init-only');
   const hasSdkUrl = cliArgs.some(arg => arg.startsWith('--sdk-url'));
-  const isNonInteractive = hasPrintFlag || hasInitOnlyFlag || hasSdkUrl || !process.stdout.isTTY;
+  const isNonInteractive = hasPrintFlag || hasInitOnlyFlag || hasSdkUrl || !shouldTreatStdoutAsInteractive();
 
   // Stop capturing early input for non-interactive modes
   if (isNonInteractive) {
@@ -873,9 +874,10 @@ async function getInputPrompt(prompt: string, inputFormat: 'text' | 'stream-json
     // without explicit stdin handling). 3s covers slow producers like curl,
     // jq on large files, python with import overhead. The warning makes
     // silent data loss visible for the rare producer that's slower still.
-    const timedOut = await peekForStdinData(process.stdin, 3000);
+    const stdinPeekTimeoutMs = shouldTreatStdoutAsInteractive() ? 50 : 3000;
+    const timedOut = await peekForStdinData(process.stdin, stdinPeekTimeoutMs);
     process.stdin.off('data', onData);
-    if (timedOut) {
+    if (timedOut && stdinPeekTimeoutMs >= 3000) {
       process.stderr.write('Warning: no stdin data received in 3s, proceeding without it. ' + 'If piping from a slow command, redirect stdin explicitly: < /dev/null to skip, or wait longer.\n');
     }
     return [prompt, data].filter(Boolean).join('\n');
